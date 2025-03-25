@@ -623,7 +623,7 @@
               </div>
               <h3>Sistemas para Internet</h3>
               <p>Graduação | 5 semestres</p>
-              <button class="secondary-button" onclick="navigateTo('detalhes-curso.html', 'sistemas-internet')">Ver Curso</button>
+              <button class="secondary-button" onclick="navigateTo('detalhes-curso.html', 'spi')">Ver Curso</button>
           </div>
           <div class="related-course-card">
               <div class="related-course-image">
@@ -692,6 +692,170 @@
       <span id="notification-message"></span>
       <span class="close-notification" onclick="closeNotification()">&times;</span>
   </div>
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Obter o parâmetro da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const section = urlParams.get('section');
+    
+    // Configurar o conteúdo com base no parâmetro
+    if (section) {
+      configurarCurso(section);
+    }
+  });
+  
+  function configurarCurso(cursoId) {
+    // Definir os dados dos cursos
+    const cursos = {
+      'ads': {
+        nivel: 'Graduação',
+        titulo: 'Análise e Desenvolvimento de Sistemas',
+        area: 'Tecnologia',
+        duracao: '5 semestres',
+        modalidade: 'Presencial e EAD',
+        grau: 'Tecnólogo',
+        cargaHoraria: '2.000 horas',
+        turno: 'Manhã, Noite e EAD',
+        notaMec: '4',
+        mensalidade: 'R$ 850,00',
+        proximaTurma: 'Agosto/2025',
+        descricao: 'O curso de Análise e Desenvolvimento de Sistemas do Senac forma profissionais capazes de analisar, projetar, documentar, especificar, testar, implantar e manter sistemas computacionais. Com uma abordagem prática e alinhada às demandas do mercado, o curso prepara os alunos para atuar em diversas áreas da tecnologia da informação.'
+      },
+      'cc': {
+        nivel: 'Bacharelado',
+        titulo: 'Ciências da Computação',
+        area: 'Tecnologia',
+        duracao: '8 semestres',
+        modalidade: 'Presencial e EAD',
+        grau: 'Bacharelado',
+        cargaHoraria: '3.200 horas',
+        turno: 'Manhã, Noite e EAD',
+        notaMec: '5',
+        mensalidade: 'R$ 950,00',
+        proximaTurma: 'Fevereiro/2026',
+        descricao: 'O curso de Ciências da Computação do Senac oferece uma formação sólida em fundamentos teóricos e científicos da computação, preparando profissionais para pesquisa e desenvolvimento de novas tecnologias. Com ênfase em matemática, algoritmos e teoria da computação, o curso forma profissionais capazes de resolver problemas complexos e inovar no campo da tecnologia.'
+      },
+      'si': {
+        nivel: 'Bacharelado',
+        titulo: 'Sistemas de Informação',
+        area: 'Tecnologia',
+        duracao: '8 semestres',
+        modalidade: 'Presencial',
+        grau: 'Bacharelado',
+        cargaHoraria: '3.000 horas',
+        turno: 'Manhã e Noite',
+        notaMec: '4',
+        mensalidade: 'R$ 900,00',
+        proximaTurma: 'Fevereiro/2026',
+        descricao: 'O curso de Sistemas de Informação do Senac une tecnologia e gestão, preparando profissionais para alinhar TI às estratégias de negócio das organizações. Com foco em desenvolvimento de sistemas, gestão de projetos e governança de TI, o curso forma profissionais completos para atuar tanto no desenvolvimento quanto na gestão de recursos tecnológicos.'
+      },
+      'spi': {
+        nivel: 'Tecnólogo',
+        titulo: 'Sistemas para Internet',
+        area: 'Tecnologia',
+        duracao: '5 semestres',
+        modalidade: 'Presencial e EAD',
+        grau: 'Tecnólogo',
+        cargaHoraria: '2.000 horas',
+        turno: 'Manhã, Noite e EAD',
+        notaMec: '4',
+        mensalidade: 'R$ 820,00',
+        proximaTurma: 'Agosto/2025',
+        descricao: 'O curso de Sistemas para Internet do Senac oferece formação especializada em desenvolvimento web e mobile, com foco em tecnologias front-end, back-end e experiência do usuário. Preparando profissionais para criar aplicações web modernas, responsivas e escaláveis, o curso aborda as principais linguagens, frameworks e metodologias do mercado.'
+      },
+      'gti': {
+        nivel: 'Tecnólogo',
+        titulo: 'Gestão da Tecnologia da Informação',
+        area: 'Tecnologia',
+        duracao: '5 semestres',
+        modalidade: 'Presencial e EAD',
+        grau: 'Tecnólogo',
+        cargaHoraria: '2.000 horas',
+        turno: 'Manhã, Noite e EAD',
+        notaMec: '4',
+        mensalidade: 'R$ 830,00',
+        proximaTurma: 'Agosto/2025',
+        descricao: 'O curso de Gestão da Tecnologia da Informação do Senac forma profissionais capacitados para gerenciar recursos tecnológicos, implementar governança de TI e liderar equipes e projetos tecnológicos. Com foco em gestão, o curso prepara profissionais para tomar decisões estratégicas relacionadas à tecnologia nas organizações.'
+      }
+    };
+    
+    // Verificar se o curso existe
+    if (!cursos[cursoId]) {
+      cursoId = 'ads'; // Curso padrão se o ID não for encontrado
+    }
+    
+    const curso = cursos[cursoId];
+    
+    // Atualizar os elementos da página com os dados do curso
+    document.querySelector('.course-level').textContent = curso.nivel;
+    document.querySelector('.course-detail-header-content h1').textContent = curso.titulo;
+    document.querySelectorAll('.course-meta-item')[0].innerHTML = `<strong>Área:</strong> ${curso.area}`;
+    document.querySelectorAll('.course-meta-item')[1].innerHTML = `<strong>Duração:</strong> ${curso.duracao}`;
+    document.querySelectorAll('.course-meta-item')[2].innerHTML = `<strong>Modalidade:</strong> ${curso.modalidade}`;
+    
+    // Atualizar o resumo do curso
+    document.querySelector('.summary-value:nth-child(2)').textContent = curso.grau;
+    document.querySelector('.summary-item:nth-child(2) .summary-value').textContent = curso.duracao;
+    document.querySelector('.summary-item:nth-child(3) .summary-value').textContent = curso.cargaHoraria;
+    document.querySelector('.summary-item:nth-child(4) .summary-value').textContent = curso.turno;
+    document.querySelector('.summary-item:nth-child(5) .summary-value').textContent = curso.modalidade;
+    document.querySelector('.summary-item:nth-child(6) .summary-value').textContent = curso.notaMec;
+    document.querySelector('.summary-item:nth-child(7) .summary-value').textContent = curso.mensalidade;
+    document.querySelector('.summary-item:nth-child(8) .summary-value').textContent = curso.proximaTurma;
+    
+    // Atualizar a descrição do curso
+    document.querySelector('#sobre p:nth-child(3)').textContent = curso.descricao;
+    
+    // Atualizar o título da página
+    document.title = `${curso.titulo} - Senac`;
+    
+    // Atualizar a imagem do curso (se necessário)
+    document.querySelector('.section-image img').alt = curso.titulo;
+    
+    // Atualizar os links de inscrição e mais informações
+    document.querySelectorAll('.cta-button').forEach(button => {
+      button.setAttribute('onclick', `openRegistrationModal('${cursoId}')`);
+    });
+    
+    // Atualizar os cursos relacionados
+    atualizarCursosRelacionados(cursoId);
+  }
+  
+  function atualizarCursosRelacionados(cursoAtual) {
+    // Lista de todos os cursos disponíveis
+    const todosCursos = {
+      'ads': { titulo: 'Análise e Desenvolvimento de Sistemas', nivel: 'Graduação', duracao: '5 semestres' },
+      'cc': { titulo: 'Ciências da Computação', nivel: 'Bacharelado', duracao: '8 semestres' },
+      'si': { titulo: 'Sistemas de Informação', nivel: 'Bacharelado', duracao: '8 semestres' },
+      'spi': { titulo: 'Sistemas para Internet', nivel: 'Tecnólogo', duracao: '5 semestres' },
+      'gti': { titulo: 'Gestão da Tecnologia da Informação', nivel: 'Tecnólogo', duracao: '5 semestres' }
+    };
+    
+    // Remover o curso atual da lista
+    const cursosRelacionados = Object.keys(todosCursos)
+      .filter(id => id !== cursoAtual)
+      .slice(0, 3); // Pegar apenas 3 cursos relacionados
+    
+    // Atualizar os cards de cursos relacionados
+    const container = document.querySelector('.related-courses-container');
+    container.innerHTML = '';
+    
+    cursosRelacionados.forEach(id => {
+      const curso = todosCursos[id];
+      const card = document.createElement('div');
+      card.className = 'related-course-card';
+      card.innerHTML = `
+        <div class="related-course-image">
+          <img src="/placeholder.svg?height=150&width=250" alt="${curso.titulo}">
+        </div>
+        <h3>${curso.titulo}</h3>
+        <p>${curso.nivel} | ${curso.duracao}</p>
+        <button class="secondary-button" onclick="navigateTo('detalhes-curso.html', '${id}')">Ver Curso</button>
+      `;
+      container.appendChild(card);
+    });
+  }
+</script>
 </body>
 </html>
 

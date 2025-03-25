@@ -234,16 +234,16 @@ function logout() {
   showNotification("Você saiu da sua conta.")
 }
 
-
-// Função para navegação
+// Modifique a função navigateTo para usar apenas parâmetros em vez de arquivos diferentes
 function navigateTo(page, section = null) {
-  // Redireciona para a página especificada
+  // Para todas as páginas, incluindo detalhes-curso.html, usamos o mesmo padrão
   if (section) {
-    window.location.href = page + "?section=" + section;
+    window.location.href = page + "?section=" + section
   } else {
-    window.location.href = page;
+    window.location.href = page
   }
 }
+
 // Funções para modais
 function openLoginModal() {
   document.getElementById("login-modal").style.display = "block"

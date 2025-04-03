@@ -1,5 +1,5 @@
 // Variáveis globais
-let studentData = null
+/*let studentData = null
 let currentSection = "dashboard"
 
 // Função para inicializar a área do aluno quando o DOM estiver carregado
@@ -1171,6 +1171,651 @@ function initProfileForm() {
       showNotification("Dados atualizados com sucesso!")
     })
   }
+}
+
+// Função para alternar o menu do usuário
+function toggleUserMenu() {
+  document.getElementById("user-dropdown").classList.toggle("active")
+}
+
+// Função para fazer logout
+function logout() {
+  // Remove os dados do usuário do localStorage
+  localStorage.removeItem("currentUser")
+
+  // Redireciona para a página inicial
+  window.location.href = "index.html"
+}
+
+// Fechar o menu do usuário quando clicar fora dele
+window.addEventListener("click", (event) => {
+  if (
+    !event.target.matches("#user-menu-button") &&
+    !event.target.matches(".user-avatar") &&
+    !event.target.matches("#user-name")
+  ) {
+    const dropdown = document.getElementById("user-dropdown")
+    if (dropdown.classList.contains("active")) {
+      dropdown.classList.remove("active")
+    }
+  }
+})
+
+// Função para exibir notificações
+function showNotification(message) {
+  const notification = document.createElement("div")
+  notification.className = "notification"
+  notification.textContent = message
+  document.body.appendChild(notification)
+
+  // Remove a notificação após alguns segundos
+  setTimeout(() => {
+    document.body.removeChild(notification)
+  }, 3000)
+}
+
+// Função para atualizar a interface do aluno
+function updateStudentUI() {
+  // Atualiza o nome do usuário no menu
+  document.getElementById("user-name").textContent = studentData.personalInfo.name.split(" ")[0]
+
+  // Atualiza informações da sidebar
+  document.getElementById("sidebar-student-name").textContent = studentData.personalInfo.name
+  document.getElementById("sidebar-student-course").textContent = studentData.academicInfo.course
+  document.getElementById("sidebar-student-ra").textContent = "RA: " + studentData.personalInfo.ra
+
+  // Carrega os dados da seção atual
+  loadSectionData(currentSection)
+}*/
+
+// Variáveis globais
+let studentData = null
+let currentSection = "dashboard"
+
+// Função para inicializar a área do aluno quando o DOM estiver carregado
+document.addEventListener("DOMContentLoaded", () => {
+  // Verifica se o usuário está logado
+  checkStudentLoginStatus()
+
+  // Inicializa a navegação entre seções
+  initSectionNavigation()
+
+  // Inicializa os formulários
+  initProfileForm()
+  initRequestForm()
+})
+
+// Função para verificar se o usuário está logado como aluno
+function checkStudentLoginStatus() {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"))
+
+  if (!currentUser || !currentUser.isStudent) {
+    // Redireciona para a página de login se não estiver logado como aluno
+    showNotification("Você precisa estar logado como aluno para acessar esta área.")
+    setTimeout(() => {
+      window.location.href = "index.html"
+    }, 2000)
+    return
+  }
+
+  // Carrega os dados do aluno
+  loadStudentData(currentUser.email)
+}
+
+// Função para carregar os dados do aluno
+function loadStudentData(email) {
+  // Em um sistema real, isso seria uma chamada para o servidor
+  // Aqui vamos simular com dados estáticos
+
+  // Verifica se já temos dados do aluno no localStorage
+  const storedStudentData = localStorage.getItem("studentData_" + email)
+
+  if (storedStudentData) {
+    studentData = JSON.parse(storedStudentData)
+  } else {
+    // Cria dados simulados para o aluno
+    studentData = createMockStudentData(email)
+
+    // Salva no localStorage para uso futuro
+    localStorage.setItem("studentData_" + email, JSON.stringify(studentData))
+  }
+
+  // Atualiza a interface com os dados do aluno
+  updateStudentUI()
+}
+
+// Função para criar dados simulados do aluno
+function createMockStudentData(email) {
+  const firstName = email.split("@")[0]
+  const capitalizedName = firstName.charAt(0).toUpperCase() + firstName.slice(1)
+
+  return {
+    personalInfo: {
+      name: capitalizedName + " Silva Santos",
+      email: email,
+      ra:
+        "RA" +
+        Math.floor(Math.random() * 1000000)
+          .toString()
+          .padStart(6, "0"),
+      cpf: "123.456.789-00",
+      birthDate: "1995-05-15",
+      gender: "M",
+      phone: "(11) 98765-4321",
+      address: {
+        cep: "01234-567",
+        street: "Rua das Flores",
+        number: "123",
+        complement: "Apto 45",
+        neighborhood: "Jardim Primavera",
+        city: "São Paulo",
+        state: "SP",
+      },
+    },
+    academicInfo: {
+      course: "Análise e Desenvolvimento de Sistemas",
+      modality: "Presencial",
+      period: "Noturno",
+      currentSemester: 3,
+      totalSemesters: 5,
+      startDate: "2023-02-01",
+      expectedEndDate: "2025-12-15",
+      coordinator: "Prof. Dr. Carlos Mendes",
+      campus: "Senac Lapa Scipião",
+    },
+    subjects: [
+      {
+        id: "prog-web",
+        name: "Programação Web",
+        teacher: "Profa. Ana Souza",
+        schedule: "Segunda e Quarta, 19h às 22h",
+        grades: {
+          grade1: 8.5,
+          grade2: null,
+          finalGrade: null,
+        },
+        attendance: 92,
+        status: "Em andamento",
+      },
+      {
+        id: "banco-dados",
+        name: "Banco de Dados",
+        teacher: "Prof. Ricardo Almeida",
+        schedule: "Terça e Quinta, 19h às 22h",
+        grades: {
+          grade1: 7.0,
+          grade2: null,
+          finalGrade: null,
+        },
+        attendance: 85,
+        status: "Em andamento",
+      },
+      {
+        id: "eng-software",
+        name: "Engenharia de Software",
+        teacher: "Prof. Marcos Oliveira",
+        schedule: "Sexta, 19h às 23h",
+        grades: {
+          grade1: 9.0,
+          grade2: null,
+          finalGrade: null,
+        },
+        attendance: 95,
+        status: "Em andamento",
+      },
+      {
+        id: "redes",
+        name: "Redes de Computadores",
+        teacher: "Profa. Juliana Costa",
+        schedule: "Sábado, 8h às 12h",
+        grades: {
+          grade1: 6.5,
+          grade2: null,
+          finalGrade: null,
+        },
+        attendance: 78,
+        status: "Em andamento",
+      },
+    ],
+    history: [
+      {
+        semester: "2023.1",
+        subjects: [
+          {
+            name: "Algoritmos e Lógica de Programação",
+            teacher: "Prof. Fernando Santos",
+            finalGrade: 8.0,
+            attendance: 90,
+            status: "Aprovado",
+          },
+          {
+            name: "Introdução à Computação",
+            teacher: "Profa. Carla Mendes",
+            finalGrade: 9.5,
+            attendance: 95,
+            status: "Aprovado",
+          },
+          {
+            name: "Matemática Aplicada",
+            teacher: "Prof. Paulo Ribeiro",
+            finalGrade: 7.5,
+            attendance: 85,
+            status: "Aprovado",
+          },
+        ],
+      },
+      {
+        semester: "2023.2",
+        subjects: [
+          {
+            name: "Programação Orientada a Objetos",
+            teacher: "Prof. Gustavo Lima",
+            finalGrade: 8.5,
+            attendance: 92,
+            status: "Aprovado",
+          },
+          {
+            name: "Estrutura de Dados",
+            teacher: "Profa. Mariana Costa",
+            finalGrade: 7.0,
+            attendance: 88,
+            status: "Aprovado",
+          },
+          {
+            name: "Interface Humano-Computador",
+            teacher: "Prof. Roberto Alves",
+            finalGrade: 9.0,
+            attendance: 94,
+            status: "Aprovado",
+          },
+        ],
+      },
+    ],
+    financial: {
+      monthlyFee: 850.0,
+      dueDay: 10,
+      scholarship: "Desconto Ex-Aluno: 10%",
+      status: "Em dia",
+      payments: [
+        {
+          reference: "Junho/2024",
+          dueDate: "2024-06-10",
+          value: 850.0,
+          discount: 85.0,
+          finalValue: 765.0,
+          status: "Pago",
+          paymentDate: "2024-06-08",
+        },
+        {
+          reference: "Julho/2024",
+          dueDate: "2024-07-10",
+          value: 850.0,
+          discount: 85.0,
+          finalValue: 765.0,
+          status: "Pendente",
+          paymentDate: null,
+        },
+        {
+          reference: "Agosto/2024",
+          dueDate: "2024-08-10",
+          value: 850.0,
+          discount: 85.0,
+          finalValue: 765.0,
+          status: "Pendente",
+          paymentDate: null,
+        },
+      ],
+    },
+    materials: [
+      {
+        id: "mat-1",
+        subject: "Programação Web",
+        title: "Apostila de HTML e CSS",
+        description: "Material completo sobre HTML5 e CSS3",
+        type: "PDF",
+        uploadDate: "2024-05-10",
+        size: "5.2 MB",
+      },
+      {
+        id: "mat-2",
+        subject: "Programação Web",
+        title: "Slides - JavaScript Básico",
+        description: "Apresentação sobre fundamentos de JavaScript",
+        type: "PDF",
+        uploadDate: "2024-05-15",
+        size: "3.8 MB",
+      },
+      {
+        id: "mat-3",
+        subject: "Banco de Dados",
+        title: "Apostila SQL",
+        description: "Material sobre SQL e modelagem de dados",
+        type: "PDF",
+        uploadDate: "2024-05-05",
+        size: "7.1 MB",
+      },
+      {
+        id: "mat-4",
+        subject: "Engenharia de Software",
+        title: "Slides - Metodologias Ágeis",
+        description: "Apresentação sobre Scrum e Kanban",
+        type: "PDF",
+        uploadDate: "2024-05-20",
+        size: "4.5 MB",
+      },
+    ],
+    activities: [
+      {
+        id: "act-1",
+        subject: "Programação Web",
+        title: "Prova P1",
+        description: "Avaliação sobre HTML, CSS e JavaScript",
+        dueDate: "2024-06-15",
+        status: "Pendente",
+      },
+      {
+        id: "act-2",
+        subject: "Banco de Dados",
+        title: "Trabalho - Modelagem ER",
+        description: "Criar um modelo ER para um sistema de e-commerce",
+        dueDate: "2024-06-20",
+        status: "Pendente",
+      },
+      {
+        id: "act-3",
+        subject: "Engenharia de Software",
+        title: "Seminário - Métodos Ágeis",
+        description: "Apresentação em grupo sobre um método ágil",
+        dueDate: "2024-06-25",
+        status: "Pendente",
+      },
+    ],
+    announcements: [
+      {
+        id: "ann-1",
+        title: "Semana Acadêmica",
+        content:
+          "A Semana Acadêmica de Tecnologia acontecerá entre os dias 10 e 14 de julho. Programação completa em breve!",
+        date: "2024-05-25",
+        author: "Coordenação do Curso",
+      },
+      {
+        id: "ann-2",
+        title: "Alteração de Horário",
+        content: "As aulas de Programação Web do dia 05/06 serão transferidas para o dia 08/06, no mesmo horário.",
+        date: "2024-05-28",
+        author: "Profa. Ana Souza",
+      },
+    ],
+    requests: [
+      {
+        id: "req-1",
+        protocol: "2024050001",
+        type: "Declaração de Matrícula",
+        date: "2024-05-10",
+        status: "Concluído",
+        description: "Solicitação de declaração de matrícula para estágio",
+      },
+      {
+        id: "req-2",
+        protocol: "2024050015",
+        type: "Revisão de Nota",
+        date: "2024-05-20",
+        status: "Em análise",
+        description: "Revisão da nota da P1 de Estrutura de Dados do semestre 2023.2",
+      },
+    ],
+    calendar: [
+      {
+        month: "Junho/2024",
+        events: [
+          {
+            date: "05/06/2024",
+            title: "Feriado - Corpus Christi",
+            description: "Não haverá aula",
+          },
+          {
+            date: "15/06/2024",
+            title: "Prova P1 - Programação Web",
+            description: "Conteúdo: HTML, CSS e JavaScript",
+          },
+          {
+            date: "20/06/2024",
+            title: "Entrega de Trabalho - Banco de Dados",
+            description: "Modelagem ER para sistema de e-commerce",
+          },
+        ],
+      },
+      {
+        month: "Julho/2024",
+        events: [
+          {
+            date: "10/07/2024 a 14/07/2024",
+            title: "Semana Acadêmica de Tecnologia",
+            description: "Palestras, workshops e atividades especiais",
+          },
+          {
+            date: "15/07/2024 a 31/07/2024",
+            title: "Recesso Escolar",
+            description: "Férias de inverno",
+          },
+        ],
+      },
+    ],
+  }
+}
+
+// Função para inicializar a navegação entre seções
+function initSectionNavigation() {
+  // Adiciona eventos de clique para os itens do menu
+  const menuItems = document.querySelectorAll(".student-menu li")
+
+  menuItems.forEach((item) => {
+    item.addEventListener("click", function (e) {
+      e.preventDefault()
+
+      // Remove a classe 'active' de todos os itens
+      menuItems.forEach((i) => i.classList.remove("active"))
+
+      // Adiciona a classe 'active' ao item clicado
+      this.classList.add("active")
+
+      // Obtém a seção a ser exibida
+      const section = this.getAttribute("data-section")
+
+      // Verifica se a seção é o dashboard ou uma seção em construção
+      if (section === "dashboard") {
+        // Carrega os dados da seção dashboard
+        loadSectionData(section)
+      } else {
+        // Mostra notificação para seções em construção
+        showNotification("Estamos construindo essa seção. Em breve estará disponível!")
+
+        // Mantém o dashboard visível
+        menuItems[0].classList.add("active")
+        this.classList.remove("active")
+        loadSectionData("dashboard")
+      }
+    })
+  })
+
+  // Verifica se há uma seção específica na URL
+  const urlParams = new URLSearchParams(window.location.search)
+  const sectionParam = urlParams.get("section")
+
+  if (sectionParam && sectionParam === "dashboard") {
+    // Ativa a seção dashboard se especificada na URL
+    const sectionItem = document.querySelector(`.student-menu li[data-section="dashboard"]`)
+    if (sectionItem) {
+      sectionItem.click()
+    }
+  } else if (sectionParam) {
+    // Para outras seções, mostra a notificação e mantém no dashboard
+    showNotification("Estamos construindo essa seção. Em breve estará disponível!")
+    const dashboardItem = document.querySelector(`.student-menu li[data-section="dashboard"]`)
+    if (dashboardItem) {
+      dashboardItem.click()
+    }
+  }
+}
+
+// Função para carregar os dados de uma seção específica
+function loadSectionData(section) {
+  // Oculta todas as seções
+  const sections = document.querySelectorAll(".content-section")
+  sections.forEach((s) => s.classList.remove("active"))
+
+  // Exibe a seção selecionada
+  const selectedSection = document.getElementById(section)
+  if (selectedSection) {
+    selectedSection.classList.add("active")
+  }
+
+  // Atualiza a seção atual
+  currentSection = section
+
+  // Carrega os dados específicos da seção
+  switch (section) {
+    case "dashboard":
+      loadDashboardData()
+      break
+    // Outras seções são tratadas pelo evento de clique e mostram notificação
+  }
+}
+
+// Função para carregar os dados do dashboard
+function loadDashboardData() {
+  // Atualiza o nome do aluno
+  document.getElementById("dashboard-student-name").textContent = studentData.personalInfo.name.split(" ")[0]
+
+  // Atualiza os cards do dashboard
+  document.getElementById("active-subjects").textContent = studentData.subjects.length
+
+  // Calcula a média geral
+  let totalGrade = 0
+  let gradeCount = 0
+
+  studentData.subjects.forEach((subject) => {
+    if (subject.grades.grade1) {
+      totalGrade += subject.grades.grade1
+      gradeCount++
+    }
+    if (subject.grades.grade2) {
+      totalGrade += subject.grades.grade2
+      gradeCount++
+    }
+  })
+
+  const averageGrade = gradeCount > 0 ? (totalGrade / gradeCount).toFixed(1) : "N/A"
+  document.getElementById("overall-average").textContent = averageGrade
+
+  // Calcula a frequência média
+  let totalAttendance = 0
+
+  studentData.subjects.forEach((subject) => {
+    totalAttendance += subject.attendance
+  })
+
+  const averageAttendance =
+    studentData.subjects.length > 0 ? (totalAttendance / studentData.subjects.length).toFixed(0) + "%" : "N/A"
+  document.getElementById("overall-attendance").textContent = averageAttendance
+
+  // Atualiza a situação financeira
+  document.getElementById("financial-status").textContent = studentData.financial.status
+
+  // Carrega as próximas atividades
+  const activitiesContainer = document.getElementById("upcoming-activities")
+  activitiesContainer.innerHTML = ""
+
+  if (studentData.activities.length > 0) {
+    studentData.activities.forEach((activity) => {
+      const activityElement = document.createElement("div")
+      activityElement.className = "activity-item"
+
+      // Formata a data
+      const dueDate = new Date(activity.dueDate)
+      const formattedDate = dueDate.toLocaleDateString("pt-BR")
+
+      activityElement.innerHTML = `
+                <div class="activity-date">${formattedDate}</div>
+                <div class="activity-info">
+                    <h4>${activity.title}</h4>
+                    <p>${activity.subject} - ${activity.description}</p>
+                </div>
+            `
+
+      activitiesContainer.appendChild(activityElement)
+    })
+  } else {
+    activitiesContainer.innerHTML = "<p>Não há atividades próximas.</p>"
+  }
+
+  // Carrega os avisos
+  const announcementsContainer = document.getElementById("announcements")
+  announcementsContainer.innerHTML = ""
+
+  if (studentData.announcements.length > 0) {
+    studentData.announcements.forEach((announcement) => {
+      const announcementElement = document.createElement("div")
+      announcementElement.className = "announcement-item"
+
+      // Formata a data
+      const announcementDate = new Date(announcement.date)
+      const formattedDate = announcementDate.toLocaleDateString("pt-BR")
+
+      announcementElement.innerHTML = `
+                <h4>${announcement.title}</h4>
+                <p>${announcement.content}</p>
+                <div class="announcement-meta">
+                    <span>${announcement.author}</span>
+                    <span>${formattedDate}</span>
+                </div>
+            `
+
+      announcementsContainer.appendChild(announcementElement)
+    })
+  } else {
+    announcementsContainer.innerHTML = "<p>Não há avisos no momento.</p>"
+  }
+}
+
+// Função para inicializar o formulário de perfil
+function initProfileForm() {
+  const profileForm = document.getElementById("profile-form")
+
+  if (profileForm) {
+    profileForm.addEventListener("submit", (e) => {
+      e.preventDefault()
+
+      // Mostra notificação de seção em construção
+      showNotification("Estamos construindo essa seção. Em breve estará disponível!")
+    })
+  }
+}
+
+// Função para inicializar o formulário de requerimento
+function initRequestForm() {
+  const requestForm = document.getElementById("request-form")
+
+  if (requestForm) {
+    requestForm.addEventListener("submit", (e) => {
+      e.preventDefault()
+
+      // Mostra notificação de seção em construção
+      showNotification("Estamos construindo essa seção. Em breve estará disponível!")
+    })
+  }
+}
+
+// Função para mostrar o formulário de novo requerimento
+function showNewRequestForm() {
+  // Mostra notificação de seção em construção
+  showNotification("Estamos construindo essa seção. Em breve estará disponível!")
+}
+
+// Função para fechar o formulário de novo requerimento
+function closeNewRequestForm() {
+  document.getElementById("new-request-form").style.display = "none"
 }
 
 // Função para alternar o menu do usuário
